@@ -1,0 +1,22 @@
+name: OrchidsService
+
+server:
+  port: 8763
+
+spring:
+  application:
+    name: orchids-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: myuser
+    password: mypassword
+
+queue:
+  name: orchids
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

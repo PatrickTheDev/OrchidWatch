@@ -1,0 +1,25 @@
+name: ScraperService
+
+server:
+  port: 8762
+
+spring:
+  application:
+    name: scraper-service
+  quartz:
+    job-store-type: memory
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: myuser
+    password: mypassword
+
+
+queue:
+  name: orchids
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

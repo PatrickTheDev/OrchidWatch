@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+#  fcm:
+#    build: .
+#    ports:
+#      - "8767:8767"
+
+  gateway:
+    build:
+      dockerfile: ./gateway-service/src/main/docker/Dockerfile
+    ports:
+      - "8769:8769"
+
+#  keycloak:
+#    ports:
+#      - "8180:8180"
+#    restart: on-failure
+#    environment:
+#      - KEYCLOAK_USER=admin
+#      - KEYCLOAK_PASSWORD=admin
+#      - KEYCLOAK_IMPORT=/home/realm-export.json
+#      - DB_VENDOR=postgres
+#      - DB_USER=admin
+#      - DB_PASSWORD=admin
+#      - DB_ADDR=keycloak-db
+#      - DB_PORT=5432
+#      - DB_DATABASE=keycloakdb
+#    depends_on:
+#      - keycloak-db
+
+#  keycloak-db:
+#    image: postgres:10
+#    container_name: 'keycloak-db'
+#    environment:
+#      POSTGRES_USER:
+#      POSTGRES_PASSWORD:
+#      POSTGRES_DB: keycloakdb
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+
+  orchids:
+    build:
+      dockerfile: ./orchids-service/src/main/docker/Dockerfile
+    ports:
+      - "8763:8763"
+
+  rabbitmq:
+    image: rabbitmq:3.9.14-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      # AMQP protocol port
+      - "5672:5672"
+      # HTTP management UI
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=myuser
+      - RABBITMQ_DEFAULT_PASS=mypassword
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_net
+
+  scraping:
+    build:
+      dockerfile: ./scraping-service/src/main/docker/Dockerfile
+    ports:
+      - "8762:8762"
+
+  selenium-remote:
+    image: selenium/standalone-firefox
+    container_name: 'selenium'
+    ports:
+      - "4444:4444"
+
+volumes:
+  pgdata:
+
+networks:
+  rabbitmq_net:
+    driver: bridge
+  fcm_net:
+    driver: host

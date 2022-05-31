@@ -1,0 +1,36 @@
+name: FCMService
+
+server:
+  port: 3020
+
+spring:
+  application:
+    name: fcm-service
+      # config:
+      # #import: optional:configserver:config-server
+      # cloud:
+      # config:
+      # discovery:
+      # enabled: true
+    # service-id: config-server
+  rabbitmq:
+    host: localhost
+    port: 3672
+    username: #TODO
+    password: #TODO
+
+queue:
+  name: orchids
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://discoveryservice:3000/eureka/
+    register-with-eureka: true
+    fetch-registry: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

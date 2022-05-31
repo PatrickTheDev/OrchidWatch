@@ -1,0 +1,38 @@
+name: GatewayService
+
+server:
+  port: 8090
+
+#spring:
+#  security:
+#    oauth2:
+#      client:
+#        provider:
+#          keycloak:
+#            issuer-uri: http://localhost:8080/auth/realms/Orchid-Scraping
+##            Individual properties can also be provided this way
+##            token-uri: http://localhost:8080/auth/realms/Orchid-Scarping/protocol/openid-connect/token
+##            authorization-uri: http://localhost:8080/auth/realms/Orchid-Scarping/protocol/openid-connect/auth
+##            userinfo-uri: http://localhost:8080/auth/realms/Orchid-Scraping/protocol/openid-connect/userinfo
+##            user-name-attribute: preferred_username
+#  registration:
+#    keycloak:
+#      provider: keycloak
+#      client-id: 8a113502-82ba-4d33-ab15-9e0dd992d985
+#      client-secret: XKlUCJuXlALdeWL4KwTkaWAHKFOgcDur
+#      authorization-grant-type: authorization_code
+#      redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
+#      scope: openid
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

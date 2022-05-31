@@ -1,0 +1,9 @@
+.idea/
+.gradle/
+gradle/
+sources.txt
+
+fcm-service/build
+gateway-service/build
+orchids-service/build
+scraping-service/build
