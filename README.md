@@ -22,6 +22,7 @@ A product scraping Spring Boot application to never miss new orchids again ;)
 <!--ts-->
 * [Background](#-background)
 * [Roadmap](#-roadmap)
+* [Usage](#usage)
 * [Have a question? Want to chat?](#-have-a-question-want-to-chat)
 <!--te-->
 
