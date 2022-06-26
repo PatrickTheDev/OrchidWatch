@@ -10,13 +10,16 @@ import com.microsoft.playwright.Playwright;
 import java.util.LinkedList;
 import java.util.List;
 
+public class OrchidHouseScraper extends ProductScraper {
 
-public class SchwerteScraper extends ProductScraper {
+    private static final String orchidHouseStartUrl =
+            "https://orchidhouseasia.com/";
+    private static final String orchidHouseShopNewUrl =
+            "https://orchidhouseasia.com/shop/?avia_extended_shop_select=yes&product_order=date";
 
-    private static final String schwerteStartUrl = "https://shop.schwerter-orchideenzucht.de/";
-    private static final String schwerteShopNewUrl = "https://shop.schwerter-orchideenzucht.de/products_new.php";
-
-    private static final String PRODUCT_WRAPPER = ".p";
+    private static final String PRODUCT_WRAPPER = ".inner_product";
+    private static final String PRODUCT_NAME = ".woocommerce-loop-product__title";
+    private static final String PRODUCT_PRICE = ".woocommerce-Price-amount";
 
     @Override
     public List<Product> scrape() {
@@ -25,8 +28,8 @@ public class SchwerteScraper extends ProductScraper {
         try (Playwright playwright = Playwright.create()) {
             Browser browser = playwright.firefox().launch();
             Page page = browser.newPage();
-            page.navigate(schwerteShopNewUrl);
-            page.waitForTimeout(10000); // 10 seconds
+            page.navigate(orchidHouseShopNewUrl);
+            page.waitForTimeout(5000); // 10 seconds
 
             List<ElementHandle> orchids = page.querySelectorAll(PRODUCT_WRAPPER);
             for (ElementHandle orchid : orchids) {
@@ -51,7 +54,7 @@ public class SchwerteScraper extends ProductScraper {
         String name = "error - name";
         try {
             name = product
-                    .querySelector("u")
+                    .querySelector(PRODUCT_NAME)
                     .innerText();
         } catch(NullPointerException e) {
             e.printStackTrace();
@@ -63,16 +66,10 @@ public class SchwerteScraper extends ProductScraper {
     String getProductPrice(ElementHandle product) {
         String price = "error - price";
         try {
-            String rawData = product
-                    .querySelector("td:has-text(\"Preis\")")
+            price = product
+                    .querySelector(PRODUCT_PRICE)
+                    .querySelector("bdi")
                     .innerText();
-            price = rawData
-                    .substring(
-                            rawData.indexOf("Preis") + 6,
-                            rawData.indexOf("EUR") - 1
-                    )
-                    .trim()
-                    .concat(" €");
         } catch(NullPointerException e) {
             e.printStackTrace();
         }
@@ -81,19 +78,19 @@ public class SchwerteScraper extends ProductScraper {
 
     @Override
     String getProductURL(ElementHandle product) {
-        String price = "error - price";
+        String url = "error - url";
         try {
-            String manipulatedUrl = product.querySelector("a").getAttribute("href");
-            int index = manipulatedUrl.indexOf("&");
-            price = manipulatedUrl.substring(0, index);
+            url = product
+                    .querySelector("a")
+                    .getAttribute("href");
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        return price;
+        return url;
     }
 
     @Override
     Store getProductStore() {
-        return Store.SCHWERTE;
+        return Store.ORCHID_HOUSE;
     }
 }

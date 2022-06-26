@@ -1,5 +1,10 @@
 package com.github.patrickpaul.scrapingservice.scraping.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Product {
 
     String name;
@@ -48,13 +53,23 @@ public class Product {
     }
 
     public String toPrintString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(name).append("\n")
+        StringBuilder sb = new StringBuilder()
+                .append(name).append("\n")
                 .append("Preis: ").append(price).append("\n")
                 .append("Store: ").append(store).append("\n")
                 .append("URL: ").append(url).append("\n");
 
         return sb.toString();
+    }
+
+    public String toJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            jsonString = mapper.writeValueAsString(this);
+        } catch(JsonProcessingException e) {
+            log.error(e.getMessage(), e);
+        }
+        return jsonString;
     }
 }

@@ -5,10 +5,8 @@ import com.github.patrickpaul.scrapingservice.scraping.model.Product;
 import com.github.patrickpaul.scrapingservice.scraping.scraper.SchwerteScraper;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 @DisallowConcurrentExecution
@@ -23,13 +21,8 @@ public class JobSchwerte extends QuartzJobBean {
     }
 
     @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        List<Product> orchids = null;
-        try {
-            orchids = scraper.scrape();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+    protected void executeInternal(JobExecutionContext context) {
+        List<Product> orchids = scraper.scrape();
         if (orchids != null) orchids.forEach(sender::send);
     }
 

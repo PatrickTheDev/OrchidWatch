@@ -11,6 +11,7 @@ sourceCompatibility = "1.8"
 
 ext {
     set('lombokVersion', "1.18.22")
+    set('playwrightVersion', "1.17.0")
     set('seleniumVersion', "4.0.0")
 }
 
@@ -25,6 +26,9 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    // Playwright
+    implementation "com.microsoft.playwright:playwright:$playwrightVersion"
 
     // Selenium
     implementation "org.seleniumhq.selenium:selenium-java:$seleniumVersion"

@@ -45,6 +45,8 @@ services:
     ports:
       - "8763:8763"
 
+  # Initial queue on startup:
+  #   https://devops.datenkollektiv.de/creating-a-custom-rabbitmq-container-with-preconfigured-queues.html
   rabbitmq:
     image: rabbitmq:3.9.14-management-alpine
     container_name: 'rabbitmq'
@@ -62,6 +64,7 @@ services:
     networks:
       - rabbitmq_net
 
+  # Base image Playwright: https://hub.docker.com/_/microsoft-playwright
   scraping:
     build:
       dockerfile: ./scraping-service/src/main/docker/Dockerfile

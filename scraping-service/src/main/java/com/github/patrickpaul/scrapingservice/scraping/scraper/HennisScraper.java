@@ -2,39 +2,37 @@ package com.github.patrickpaul.scrapingservice.scraping.scraper;
 
 import com.github.patrickpaul.scrapingservice.scraping.model.Product;
 import com.github.patrickpaul.scrapingservice.scraping.model.Store;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class HennisScraper extends ProductScraper {
 
     private static final String hennisStartUrl = "https://hennis-orchideen.de/";
+    private static final String hennisShopUrl = "https://hennis-orchideen.de";
     private static final String hennisShopNewUrl =
             "https://hennis-orchideen.de/collections/alle-produkte?sort_by=created-descending";
 
-    private static final String PRODUCT_WRAPPER = "grid-item__content";
-    private static final String PRODUCT_NAME = "grid-product__title";
-    private static final String PRODUCT_PRICE = "grid-product__price--current";
+    private static final String PRODUCT_WRAPPER = ".grid-item__content";
+    private static final String PRODUCT_NAME = ".grid-product__title";
+    private static final String PRODUCT_PRICE = ".grid-product__price--current";
 
     @Override
-    public List<Product> scrape() throws MalformedURLException {
-        WebDriver driver = getWebDriver();
+    public List<Product> scrape() {
+        List<Product> result = new LinkedList<>();
 
-        List<Product> result = new ArrayList<>();
-        WebDriverWait wait = new WebDriverWait(driver, 30);
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.firefox().launch();
+            Page page = browser.newPage();
+            page.navigate(hennisShopNewUrl);
+            page.waitForTimeout(10000); // 10 seconds
 
-        try {
-            driver.get(hennisShopNewUrl);
-            List<WebElement> orchids = wait.until(getCondition());
-
-            for (WebElement orchid : orchids) {
+            List<ElementHandle> orchids = page.querySelectorAll(PRODUCT_WRAPPER);
+            for (ElementHandle orchid : orchids) {
                 result.add(
                         Product.createProduct(
                                 getProductName(orchid),
@@ -45,42 +43,45 @@ public class HennisScraper extends ProductScraper {
                 );
             }
 
-        } catch(Exception e) {
-            e.printStackTrace();
+            browser.close();
         }
 
         return result;
     }
 
-    private ExpectedCondition<List<WebElement>> getCondition() {
-        return ExpectedConditions.presenceOfAllElementsLocatedBy(
-                By.className(PRODUCT_WRAPPER)
-        );
-    }
-
-    private static void log(String s) {
-        System.out.println(s);
+    @Override
+    String getProductName(ElementHandle product) {
+        String name = "error - name";
+        try {
+            name = product
+                    .querySelector(PRODUCT_NAME)
+                    .innerText();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 
     @Override
-    String getProductName(WebElement product) {
-        WebElement div = product.findElement(By.className(PRODUCT_NAME));
-        return div.getText();
-    }
-
-    @Override
-    String getProductPrice(WebElement product) {
+    String getProductPrice(ElementHandle product) {
         /*
         Preis scheint nicht im headless-mode geladen angezeigt zu werden und
         ist somit nicht für den Scraper zu finden.
          */
-        return "Hennis: Scraping the price not possible";
+        return "Scraping the price is not possible";
     }
 
     @Override
-    String getProductURL(WebElement product) {
-        WebElement a = product.findElement(By.tagName("a"));
-        return a.getAttribute("href");
+    String getProductURL(ElementHandle product) {
+        String url = "error - url";
+        try {
+            url = hennisShopUrl + product
+                    .querySelector("a")
+                    .getAttribute("href");
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     @Override

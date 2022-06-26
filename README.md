@@ -43,6 +43,7 @@ more about microservices.
     * [x] Use RemoteWebDriver for Selenium
     * [x] Scrape products (in this case orchids) from websites
     * [x] Send scraped products to a queue
+    * [ ] Edit things like scrape intervals
   * [ ] Orchids Microservice
     * [x] Receive products from queue
     * [ ] Add products to database, if they don't exist already
@@ -62,8 +63,9 @@ more about microservices.
     * [ ] Click on list item opens website with product
   * [ ] Push notification when new products were found
 
+<!--
 ## Usage
-To scrape a website for new products we're going to use Selenium WebDriver.
+To scrape a website for new products we're going to use Playwright.
 You don't have to worry about WebDrivers or other things for setup. Just follow this tutorial.
 
 To scrape a website for new products, extend the ProductScraper class and implement the methods accordingly to your desired products.
@@ -211,6 +213,7 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     
 }
 ```
+-->
 
 ## 📬 Have a question? Want to chat?
 <p>Write me a <a href="mailto:patrickpaul@posteo.de">mail</a> 📧</p>
